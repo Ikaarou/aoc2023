@@ -1,12 +1,8 @@
 def get_card_value(winning_numbers, numbers):
-    card_value = 0
-        for winning_number in winning_numbers:
-            if winning_number in numbers:
-                if card_value == 0:
-                    card_value = 1
-                else:
-                    card_value *= 2
-    return card_value
+    matched = [n for n in winning_numbers if n in numbers]
+    if not matched:
+        return 0
+    return pow(2, len(matched) -1)
 
 def solve():
     total = 0
@@ -14,14 +10,12 @@ def solve():
     list_winning_numbers = {}
     list_numbers = {}
     for i, line in enumerate(f.readlines()):
-        winning_numbers, numbers = map(lambda numbers: numbers.strip().split(' '), line.rstrip().replace(f'Card {i + 1}: ', '').replace(f'Card  {i + 1}: ', '').replace(f'Card   {i + 1}: ', '').split('|'))
-        winning_numbers = [int(numeric_string) for numeric_string in list(filter(''.__ne__, winning_numbers))]
-        numbers = [int(numeric_string) for numeric_string in list(filter(''.__ne__, numbers))]
+        winning_numbers, numbers = map(lambda numbers: numbers.strip().split(' '), line.rstrip().split('|'))
+        winning_numbers = [int(numeric_string) for numeric_string in winning_numbers if numeric_string.isnumeric()]
+        numbers = [int(numeric_string) for numeric_string in numbers if numeric_string.isnumeric()]
         list_winning_numbers[i] = (winning_numbers, 1)
         list_numbers[i] = numbers
-
-        card_value = get_card_value(winning_numbers, number)
-        total += card_value
+        total += get_card_value(winning_numbers, numbers)
 
     for i in range(len(list_winning_numbers)):
         card_value = 0
