@@ -13,36 +13,35 @@ def find_lowest_location(seeds, almanac):
     return lowest_location
 
 def find_lowest_location_with_range(seeds_with_range, almanac):
- 
     current_step_values = []
-    next_values = []
     for seed_start, seed_range in seeds_with_range:
         current_step_values.append((seed_start, seed_start + seed_range - 1))
-    for s, step in enumerate(almanac):
+    
+    next_values = []
+  
+    for step in almanac:
         current_step_values = next_values + current_step_values
         next_values = []
         for transform in almanac[step]:
             source_start, destination_start, range_length = transform
-                
             source_end = source_start + range_length
-
             transformation = destination_start - source_start
-            no_values = []
-            for start, end in current_step_values:
+            no_transformations = []
 
+            for start, end in current_step_values:
                 # Before or After
                 if (source_end <= start or source_start > end):
-                    no_values.append((start, end))
+                    no_transformations.append((start, end))
                     continue
                 # Intersection start
                 if (source_start >= start and source_start <= end and source_end > end):
                     next_values.append((source_start + transformation, end + transformation))
-                    no_values.append((start, source_start - 1))
+                    no_transformations.append((start, source_start - 1))
                     continue
                 # Intersection end
                 if (source_start <= start and source_end > start and end > source_end):
                     next_values.append((start + transformation, source_end + transformation))
-                    no_values.append((source_end +1 , end))
+                    no_transformations.append((source_end +1 , end))
                     continue
                 # Contained inside target
                 if (start >= source_start and source_end > end):
@@ -50,21 +49,16 @@ def find_lowest_location_with_range(seeds_with_range, almanac):
                     continue
                 # target contained inside source
                 if (start <= source_start and source_end < end):
-                    no_values.append((start, source_start - 1))
-                    no_values.append((source_end, end))
+                    no_transformations.append((start, source_start - 1))
+                    no_transformations.append((source_end, end))
                     next_values.append((source_start + transformation, source_end + transformation))
                     continue
-            current_step_values = no_values
+            current_step_values = no_transformations
 
     current_step_values = next_values + current_step_values
-    lowest_location = None
-    for location_min, location_max in current_step_values:
-        if lowest_location is None or location_min < lowest_location:
-            lowest_location = location_min
-    return lowest_location
+    return min(list(map(lambda csv: csv[0], current_step_values)))
 
 def solve():
-    total = 0
     f = open("input", "r")
     almanac = {}
     step = -1
