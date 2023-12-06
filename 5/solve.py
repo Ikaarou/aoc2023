@@ -28,11 +28,7 @@ def find_lowest_location_with_range(seeds_with_range, almanac):
             transformation = destination_start - source_start
             no_transformations = []
 
-            for start, end in current_step_values:
-                # Before or After
-                if (source_end <= start or source_start > end):
-                    no_transformations.append((start, end))
-                    continue
+            for start, end in current_step_values:                    
                 # Intersection start
                 if (source_start >= start and source_start <= end and source_end > end):
                     next_values.append((source_start + transformation, end + transformation))
@@ -53,6 +49,7 @@ def find_lowest_location_with_range(seeds_with_range, almanac):
                     no_transformations.append((source_end, end))
                     next_values.append((source_start + transformation, source_end + transformation))
                     continue
+                no_transformations.append((start, end))
             current_step_values = no_transformations
 
     current_step_values = next_values + current_step_values
