@@ -1,4 +1,4 @@
-import math
+from math import lcm
 
 def find_path(sequence, nodes_hash, node = 'AAA'):
     steps = 0
@@ -11,11 +11,6 @@ def find_path(sequence, nodes_hash, node = 'AAA'):
         node = nodes_hash[node][direction]
 
     return steps
-
-def lcm(paths):
-    if len(paths) == 2:
-        return paths[0] * paths[1] // math.gcd(paths[0], paths[1])
-    return lcm([paths[0], lcm(paths[1:])])
 
 
 def solve():
@@ -39,6 +34,6 @@ def solve():
         if node[2] == 'A':
             paths.append(find_path(sequence, nodes_hash, node))
 
-    return lcm(paths)
+    return lcm(*paths)
  
 print('Results', solve())
