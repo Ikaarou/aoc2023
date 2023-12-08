@@ -34,6 +34,6 @@ def solve():
         if node[2] == 'A':
             paths.append(find_path(sequence, nodes_hash, node))
 
-    return lcm(*paths)
+    return paths[0], lcm(*paths)
  
 print('Results', solve())
